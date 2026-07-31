@@ -42,13 +42,6 @@ export class NotificationController {
         return await this.notificationService.getAllNotifications(paginationDto);
     }
 
-    @Get(':id')
-    @ApiOperation({summary:'Get notification by ID'})
-    @ApiOkResponse({ type: NotificationDto, description: 'Notification found successfully.' })
-    async getById(@Param('id') id: string) : Promise<NotificationDto> {
-        return this.notificationService.getNotificationById(id);
-    }
-
     @Get('status/:status')
     @ApiOperation({summary:'Get notifications by status'})
     @ApiParam({ name: 'status', enum: NotificationStatus, enumName: 'NotificationStatus', description: 'Notification status to filter by' })
@@ -63,6 +56,13 @@ export class NotificationController {
     @ApiOkResponse({ type: [NotificationDto], description: 'List of notifications with the specified type.' })
     async getByType(@Param('type') type: string, @Query() paginationDto : PaginationDto) : Promise<PaginatedResultDto<NotificationDto>> {
         return this.notificationService.getNotificationsByType(type, paginationDto);
+    }
+
+    @Get(':id')
+    @ApiOperation({summary:'Get notification by ID'})
+    @ApiOkResponse({ type: NotificationDto, description: 'Notification found successfully.' })
+    async getById(@Param('id') id: string) : Promise<NotificationDto> {
+        return this.notificationService.getNotificationById(id);
     }
 
     @Patch('cancel/:id')
