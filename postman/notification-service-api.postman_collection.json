@@ -1,0 +1,1332 @@
+{
+  "info": {
+    "_postman_id": "fb5074da-dadd-4426-a537-284dffb4d89c",
+    "name": "Notification Service API",
+    "description": "Collection for testing all Notification Service endpoints, including positive and negative scenarios.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "11433965"
+  },
+  "item": [
+    {
+      "name": "Happy Path",
+      "item": [
+        {
+          "name": "Create Notification Immediate",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201 or 200', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "const expectedFields = [",
+                  "    \"id\",",
+                  "    \"recipient\",",
+                  "    \"type\",",
+                  "    \"message\",",
+                  "    \"status\",",
+                  "    \"createdAt\",",
+                  "    \"subject\"",
+                  "];",
+                  "",
+                  "pm.test(\"All expected fields are present\", function () {",
+                  "    expectedFields.forEach(field => {",
+                  "        pm.expect(response).to.have.property(field);",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"Status should not be PENDING\", function () {",
+                  "    pm.expect(response.status).to.not.eql(\"PENDING\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"EMAIL\",\n  \"recipient\": \"user@example.com\",\n  \"message\": \"Your order has been shipped.\",\n  \"subject\": \"Order Update\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notification",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification"
+              ]
+            },
+            "description": "Saves a notification and returns the created record."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Notification Future",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201 or 200', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "const expectedFields = [",
+                  "    \"id\",",
+                  "    \"recipient\",",
+                  "    \"type\",",
+                  "    \"message\",",
+                  "    \"status\",",
+                  "    \"createdAt\",",
+                  "    \"subject\",",
+                  "    \"scheduledAt\"",
+                  "];",
+                  "",
+                  "pm.test(\"All expected fields are present\", function () {",
+                  "    expectedFields.forEach(field => {",
+                  "        pm.expect(response).to.have.property(field);",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"Status should be PENDING\", function () {",
+                  "    pm.expect(response.status).to.eql(\"PENDING\");",
+                  "});",
+                  "",
+                  "pm.collectionVariables.set('notificationId', response.id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"EMAIL\",\n  \"recipient\": \"user@example.com\",\n  \"message\": \"Your order has been shipped.\",\n  \"subject\": \"Order Update\",\n  \"scheduledAt\": \"{{currentDatePlus3Days}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notification",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification"
+              ]
+            },
+            "description": "Saves a notification and returns the created record."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Notification Scheduled CurrentDate",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201 or 200', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "const expectedFields = [",
+                  "    \"id\",",
+                  "    \"recipient\",",
+                  "    \"type\",",
+                  "    \"message\",",
+                  "    \"status\",",
+                  "    \"createdAt\",",
+                  "    \"subject\",",
+                  "    \"scheduledAt\"",
+                  "];",
+                  "",
+                  "pm.test(\"All expected fields are present\", function () {",
+                  "    expectedFields.forEach(field => {",
+                  "        pm.expect(response).to.have.property(field);",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"Status should not be PENDING\", function () {",
+                  "    pm.expect(response.status).to.not.eql(\"PENDING\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"EMAIL\",\n  \"recipient\": \"user@example.com\",\n  \"message\": \"Your order has been shipped.\",\n  \"subject\": \"Order Update\",\n  \"scheduledAt\": \"{{currentDate}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notification",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification"
+              ]
+            },
+            "description": "Saves a notification and returns the created record."
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Notification",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201 or 200', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "const expectedFields = [",
+                  "    \"id\",",
+                  "    \"recipient\",",
+                  "    \"type\",",
+                  "    \"message\",",
+                  "    \"status\",",
+                  "    \"createdAt\",",
+                  "    \"subject\",",
+                  "    \"scheduledAt\"",
+                  "];",
+                  "",
+                  "pm.test(\"All expected fields are present\", function () {",
+                  "    expectedFields.forEach(field => {",
+                  "        pm.expect(response).to.have.property(field);",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notification/cancel/{{notificationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification",
+                "cancel",
+                "{{notificationId}}"
+              ]
+            },
+            "description": "Cancels a notification by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Notifications (Paginated)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201 or 200', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "pm.test('data is not empty', function() {",
+                  "    pm.expect(response.data).to.not.be.empty;",
+                  "});",
+                  "",
+                  "pm.test('pagination details is available', function() {",
+                  "    pm.expect(response).to.have.property(\"meta\");",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notification?page={{page}}&limit={{limit}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "{{page}}"
+                },
+                {
+                  "key": "limit",
+                  "value": "{{limit}}"
+                }
+              ]
+            },
+            "description": "Returns all notifications with pagination."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Notification",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201 or 200', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "const expectedFields = [",
+                  "    \"id\",",
+                  "    \"recipient\",",
+                  "    \"type\",",
+                  "    \"message\",",
+                  "    \"status\",",
+                  "    \"createdAt\",",
+                  "    \"subject\",",
+                  "    \"scheduledAt\"",
+                  "];",
+                  "",
+                  "pm.test(\"All expected fields are present\", function () {",
+                  "    expectedFields.forEach(field => {",
+                  "        pm.expect(response).to.have.property(field);",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"Status should be PENDING\", function () {",
+                  "    pm.expect(response.status).to.eql(\"PENDING\");",
+                  "});",
+                  "",
+                  "pm.collectionVariables.set('notificationId', response.id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"EMAIL\",\n  \"recipient\": \"user@example.com\",\n  \"message\": \"Your order has been shipped.\",\n  \"subject\": \"Order Update\",\n  \"scheduledAt\": \"{{currentDatePlus3Days}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notification",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification"
+              ]
+            },
+            "description": "Saves a notification and returns the created record."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notification By ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201 or 200', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "const expectedFields = [",
+                  "    \"id\",",
+                  "    \"recipient\",",
+                  "    \"type\",",
+                  "    \"message\",",
+                  "    \"status\",",
+                  "    \"createdAt\",",
+                  "    \"subject\",",
+                  "    \"scheduledAt\"",
+                  "];",
+                  "",
+                  "pm.test(\"All expected fields are present\", function () {",
+                  "    expectedFields.forEach(field => {",
+                  "        pm.expect(response).to.have.property(field);",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notification/{{notificationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification",
+                "{{notificationId}}"
+              ]
+            },
+            "description": "Gets one notification by UUID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Filter by Status",
+      "item": [
+        {
+          "name": "Get Notifications - PENDING",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "const expectedFields = [",
+                  "    \"id\",",
+                  "    \"recipient\",",
+                  "    \"type\",",
+                  "    \"message\",",
+                  "    \"status\",",
+                  "    \"createdAt\"",
+                  "];",
+                  "",
+                  "pm.test(\"Data is not empty\", function () {",
+                  "    pm.expect(response.data).to.not.be.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"All notifications contain expected fields\", function () {",
+                  "    response.data.forEach(notification => {",
+                  "        expectedFields.forEach(field => {",
+                  "            pm.expect(notification).to.have.property(field);",
+                  "        });",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"All notification statuses are PENDING\", function () {",
+                  "    response.data.forEach(notification => {",
+                  "        pm.expect(notification.status).to.equal(\"PENDING\");",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notification/status/PENDING",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification",
+                "status",
+                "PENDING"
+              ]
+            },
+            "description": "Filter notifications by status PENDING."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notifications - DELIVERED",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "const expectedFields = [",
+                  "    \"id\",",
+                  "    \"recipient\",",
+                  "    \"type\",",
+                  "    \"message\",",
+                  "    \"status\",",
+                  "    \"createdAt\"",
+                  "];",
+                  "",
+                  "pm.test(\"Data is not empty\", function () {",
+                  "    pm.expect(response.data).to.not.be.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"All notifications contain expected fields\", function () {",
+                  "    response.data.forEach(notification => {",
+                  "        expectedFields.forEach(field => {",
+                  "            pm.expect(notification).to.have.property(field);",
+                  "        });",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"All notification statuses are DELIVERED\", function () {",
+                  "    response.data.forEach(notification => {",
+                  "        pm.expect(notification.status).to.equal(\"DELIVERED\");",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notification/status/DELIVERED",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification",
+                "status",
+                "DELIVERED"
+              ]
+            },
+            "description": "Filter notifications by status DELIVERED."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notifications - FAILED",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "const expectedFields = [",
+                  "    \"id\",",
+                  "    \"recipient\",",
+                  "    \"type\",",
+                  "    \"message\",",
+                  "    \"status\",",
+                  "    \"createdAt\"",
+                  "];",
+                  "",
+                  "pm.test(\"Data is not empty\", function () {",
+                  "    pm.expect(response.data).to.not.be.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"All notifications contain expected fields\", function () {",
+                  "    response.data.forEach(notification => {",
+                  "        expectedFields.forEach(field => {",
+                  "            pm.expect(notification).to.have.property(field);",
+                  "        });",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"All notification statuses are FAILED\", function () {",
+                  "    response.data.forEach(notification => {",
+                  "        pm.expect(notification.status).to.equal(\"FAILED\");",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notification/status/FAILED",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification",
+                "status",
+                "FAILED"
+              ]
+            },
+            "description": "Filter notifications by status FAILED."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notifications - CANCELLED",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "const expectedFields = [",
+                  "    \"id\",",
+                  "    \"recipient\",",
+                  "    \"type\",",
+                  "    \"message\",",
+                  "    \"status\",",
+                  "    \"createdAt\"",
+                  "];",
+                  "",
+                  "pm.test(\"Data is not empty\", function () {",
+                  "    pm.expect(response.data).to.not.be.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"All notifications contain expected fields\", function () {",
+                  "    response.data.forEach(notification => {",
+                  "        expectedFields.forEach(field => {",
+                  "            pm.expect(notification).to.have.property(field);",
+                  "        });",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"All notification statuses are CANCELLED\", function () {",
+                  "    response.data.forEach(notification => {",
+                  "        pm.expect(notification.status).to.equal(\"CANCELLED\");",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notification/status/CANCELLED",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification",
+                "status",
+                "CANCELLED"
+              ]
+            },
+            "description": "Filter notifications by status CANCELLED."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Filter by Type",
+      "item": [
+        {
+          "name": "Get Notifications - EMAIL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "const expectedFields = [",
+                  "    \"id\",",
+                  "    \"recipient\",",
+                  "    \"type\",",
+                  "    \"message\",",
+                  "    \"status\",",
+                  "    \"createdAt\"",
+                  "];",
+                  "",
+                  "pm.test(\"Data is not empty\", function () {",
+                  "    pm.expect(response.data).to.not.be.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"All notifications contain expected fields\", function () {",
+                  "    response.data.forEach(notification => {",
+                  "        expectedFields.forEach(field => {",
+                  "            pm.expect(notification).to.have.property(field);",
+                  "        });",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"All type is EMAIL\", function () {",
+                  "    response.data.forEach(notification => {",
+                  "        pm.expect(notification.type).to.equal(\"EMAIL\");",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notification/type/EMAIL",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification",
+                "type",
+                "EMAIL"
+              ]
+            },
+            "description": "Filter notifications by type EMAIL."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notifications - SMS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "const expectedFields = [",
+                  "    \"id\",",
+                  "    \"recipient\",",
+                  "    \"type\",",
+                  "    \"message\",",
+                  "    \"status\",",
+                  "    \"createdAt\"",
+                  "];",
+                  "",
+                  "pm.test(\"Data is not empty\", function () {",
+                  "    pm.expect(response.data).to.not.be.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"All notifications contain expected fields\", function () {",
+                  "    response.data.forEach(notification => {",
+                  "        expectedFields.forEach(field => {",
+                  "            pm.expect(notification).to.have.property(field);",
+                  "        });",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"All type is SMS\", function () {",
+                  "    response.data.forEach(notification => {",
+                  "        pm.expect(notification.type).to.equal(\"SMS\");",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notification/type/SMS",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification",
+                "type",
+                "SMS"
+              ]
+            },
+            "description": "Filter notifications by type SMS."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notifications - PUSH",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "const expectedFields = [",
+                  "    \"id\",",
+                  "    \"recipient\",",
+                  "    \"type\",",
+                  "    \"message\",",
+                  "    \"status\",",
+                  "    \"createdAt\"",
+                  "];",
+                  "",
+                  "pm.test(\"Data is not empty\", function () {",
+                  "    pm.expect(response.data).to.not.be.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"All notifications contain expected fields\", function () {",
+                  "    response.data.forEach(notification => {",
+                  "        expectedFields.forEach(field => {",
+                  "            pm.expect(notification).to.have.property(field);",
+                  "        });",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"All type is PUSH\", function () {",
+                  "    response.data.forEach(notification => {",
+                  "        pm.expect(notification.type).to.equal(\"PUSH\");",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notification/type/PUSH",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification",
+                "type",
+                "PUSH"
+              ]
+            },
+            "description": "Filter notifications by type PUSH."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Negative Scenarios",
+      "item": [
+        {
+          "name": "Create Notification - Missing Required Fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.expect(pm.response.code).to.equal(400);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains validation error fields\", function () {",
+                  "    pm.expect(response).to.have.property(\"statusCode\");",
+                  "    pm.expect(response).to.have.property(\"timestamp\");",
+                  "    pm.expect(response).to.have.property(\"path\");",
+                  "    pm.expect(response).to.have.property(\"message\");",
+                  "});",
+                  "",
+                  "pm.test(\"Status code in response body is 400\", function () {",
+                  "    pm.expect(response.statusCode).to.equal(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Validation message contains expected error\", function () {",
+                  "    pm.expect(response.message).to.include(\"message must be a string\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"EMAIL\",\n  \"recipient\": \"user@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notification",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification"
+              ]
+            },
+            "description": "Should fail because message is required."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Notification - Invalid Enum",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.expect(pm.response.code).to.equal(400);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains validation error fields\", function () {",
+                  "    pm.expect(response).to.have.property(\"statusCode\");",
+                  "    pm.expect(response).to.have.property(\"timestamp\");",
+                  "    pm.expect(response).to.have.property(\"path\");",
+                  "    pm.expect(response).to.have.property(\"message\");",
+                  "});",
+                  "",
+                  "pm.test(\"Status code in response body is 400\", function () {",
+                  "    pm.expect(response.statusCode).to.equal(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Validation message contains expected error\", function () {",
+                  "    pm.expect(response.message).to.include(\"type must be one of the following values: EMAIL, SMS, PUSH\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"WHATSAPP\",\n  \"recipient\": \"user@example.com\",\n  \"message\": \"Invalid type\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notification",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification"
+              ]
+            },
+            "description": "Should fail because type must be EMAIL, SMS, or PUSH."
+          },
+          "response": []
+        },
+        {
+          "name": "Send Notification - Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "    pm.expect(pm.response.code).to.equal(404);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains validation error fields\", function () {",
+                  "    pm.expect(response).to.have.property(\"statusCode\");",
+                  "    pm.expect(response).to.have.property(\"timestamp\");",
+                  "    pm.expect(response).to.have.property(\"path\");",
+                  "    pm.expect(response).to.have.property(\"message\");",
+                  "});",
+                  "",
+                  "pm.test(\"Status code in response body is 404 and message is correct\", function () {",
+                  "    pm.expect(response.statusCode).to.equal(404);",
+                  "    pm.expect(response.message).to.eql(\"Notification with ID 00000000-0000-0000-0000-000000000000 not found\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notification/send/00000000-0000-0000-0000-000000000000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification",
+                "send",
+                "00000000-0000-0000-0000-000000000000"
+              ]
+            },
+            "description": "Should return 404 for a non-existent notification ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notification - Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "    pm.expect(pm.response.code).to.equal(404);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains validation error fields\", function () {",
+                  "    pm.expect(response).to.have.property(\"statusCode\");",
+                  "    pm.expect(response).to.have.property(\"timestamp\");",
+                  "    pm.expect(response).to.have.property(\"path\");",
+                  "    pm.expect(response).to.have.property(\"message\");",
+                  "});",
+                  "",
+                  "pm.test(\"Status code in response body is 404 and message is correct\", function () {",
+                  "    pm.expect(response.statusCode).to.equal(404);",
+                  "    pm.expect(response.message).to.eql(\"Notification with ID 00000000-0000-0000-0000-000000000000 not found\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notification/00000000-0000-0000-0000-000000000000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification",
+                "00000000-0000-0000-0000-000000000000"
+              ]
+            },
+            "description": "Should return 404 for a non-existent notification ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Notification - Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {",
+                  "    pm.expect(pm.response.code).to.equal(404);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains validation error fields\", function () {",
+                  "    pm.expect(response).to.have.property(\"statusCode\");",
+                  "    pm.expect(response).to.have.property(\"timestamp\");",
+                  "    pm.expect(response).to.have.property(\"path\");",
+                  "    pm.expect(response).to.have.property(\"message\");",
+                  "});",
+                  "",
+                  "pm.test(\"Status code in response body is 404 and message is correct\", function () {",
+                  "    pm.expect(response.statusCode).to.equal(404);",
+                  "    pm.expect(response.message).to.eql(\"Notification with ID 00000000-0000-0000-0000-000000000000 not found\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notification/cancel/00000000-0000-0000-0000-000000000000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification",
+                "cancel",
+                "00000000-0000-0000-0000-000000000000"
+              ]
+            },
+            "description": "Should return 404 for a non-existent notification ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notifications - Invalid Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.expect(pm.response.code).to.equal(400);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains validation error fields\", function () {",
+                  "    pm.expect(response).to.have.property(\"statusCode\");",
+                  "    pm.expect(response).to.have.property(\"timestamp\");",
+                  "    pm.expect(response).to.have.property(\"path\");",
+                  "    pm.expect(response).to.have.property(\"message\");",
+                  "});",
+                  "",
+                  "pm.test(\"Status code in response body is 400 and message is correct\", function () {",
+                  "    pm.expect(response.statusCode).to.equal(400);",
+                  "    pm.expect(response.message).to.eql(\"Invalid status: INVALID\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notification/status/INVALID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification",
+                "status",
+                "INVALID"
+              ]
+            },
+            "description": "Should return 400 for an invalid status value."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notifications - Invalid Type",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.expect(pm.response.code).to.equal(400);",
+                  "});",
+                  "",
+                  "const response = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains validation error fields\", function () {",
+                  "    pm.expect(response).to.have.property(\"statusCode\");",
+                  "    pm.expect(response).to.have.property(\"timestamp\");",
+                  "    pm.expect(response).to.have.property(\"path\");",
+                  "    pm.expect(response).to.have.property(\"message\");",
+                  "});",
+                  "",
+                  "pm.test(\"Status code in response body is 400 and message is correct\", function () {",
+                  "    pm.expect(response.statusCode).to.equal(400);",
+                  "    pm.expect(response.message).to.eql(\"Invalid type: WHATSAPP\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notification/type/WHATSAPP",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notification",
+                "type",
+                "WHATSAPP"
+              ]
+            },
+            "description": "Should return 400 for an invalid type value."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "const currentDate = new Date();",
+          "pm.collectionVariables.set('currentDate', currentDate.toISOString());",
+          "",
+          "const futureDate = new Date();",
+          "futureDate.setDate(futureDate.getDate() + 3);",
+          "",
+          "pm.variables.set(\"currentDatePlus3Days\", futureDate.toISOString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "notificationId",
+      "value": "replace-with-notification-uuid"
+    },
+    {
+      "key": "page",
+      "value": "1"
+    },
+    {
+      "key": "limit",
+      "value": "10"
+    },
+    {
+      "key": "currentDate",
+      "value": ""
+    }
+  ]
+}
