@@ -79,7 +79,7 @@ pnpm run test:e2e
 - Delivery is currently simulated inside the provider strategies, so the service does not integrate with real message providers out of the box.
 - Sending is performed inline during the request lifecycle rather than via a background worker or queue. No bullMQ/cron for now
 - There is no seed data included; the database begins empty and populated through the API POST Notification.
-- The current implementation focuses on core CRUD and send/cancel flows rather than advanced retry and scheduling features.
+- The current implementation focuses on core CRUD and send/cancel flows rather than advanced retry and queuing features.
 
 ## Database Schema, Migrations, and Seed Data
 
