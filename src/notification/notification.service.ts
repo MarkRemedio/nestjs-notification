@@ -1,17 +1,16 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { NotificationFactory } from './factory/notification.factory';
 import { SendNotificationDto } from './dto/send-notification.dto';
 import { NotificationResult } from './dto/notification-result.dto';
 import { NotificationEntity } from './entities/notification.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThanOrEqual, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { NotificationStatus } from './enums/notification-status.enum';
 import { NotificationType } from './enums/notification-type.enum';
 import { PaginationDto } from './dto/pagination-request.dto';
 import { PaginatedResultDto } from './dto/paginated-result.dto';
 import { NotificationDto } from './dto/notification.dto';
-import { mapNotificationEntitiesToDtos, mapNotificationEntityToDto, mapPaginatedNotificationsToDto } from './utils/notification.mapper';
+import { mapNotificationEntityToDto, mapPaginatedNotificationsToDto } from './utils/notification.mapper';
 
 @Injectable()
 export class NotificationService {
@@ -57,25 +56,6 @@ export class NotificationService {
         }
 
         return notificationResult;
-    }
-
-    @Cron(CronExpression.EVERY_MINUTE)
-    async processScheduledNotifications(): Promise<void> {
-        const now = new Date();
-        const dueNotifications = await this.notificationRepository.find({
-            where: {
-                status: NotificationStatus.PENDING,
-                scheduledAt: LessThanOrEqual(now),
-            },
-            order: {
-                scheduledAt: 'ASC',
-            },
-        });
-
-        console.log(`Processing ${dueNotifications.length} scheduled notifications at ${now.toISOString()}`, dueNotifications.map(notification => notification.id));
-        for (const notification of dueNotifications) {
-            await this.sendNotification(notification.id);
-        }
     }
 
     async saveNotification(entity:SendNotificationDto) : Promise<NotificationDto> {

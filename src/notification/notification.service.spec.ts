@@ -141,7 +141,7 @@ describe('NotificationService', () => {
     });
 
     it('should return the saved notification when a schedule is provided', async () => {
-      const scheduledAt = new Date('2026-08-01T10:00:00.000Z');
+      const scheduledAt = new Date(Date.now() + 60 * 60 * 1000);
       const dto = {
         recipient: 'user@example.com',
         type: NotificationType.SMS,
@@ -163,29 +163,6 @@ describe('NotificationService', () => {
         scheduledAt,
       });
       expect(result).toEqual({ id: '2' });
-    });
-  });
-
-  describe('processScheduledNotifications', () => {
-    it('should send all pending notifications whose schedule time has arrived', async () => {
-      const dueNotifications = [
-        { id: '1', status: NotificationStatus.PENDING, scheduledAt: new Date('2026-08-01T10:00:00.000Z') },
-        { id: '2', status: NotificationStatus.PENDING, scheduledAt: new Date('2026-07-31T10:00:00.000Z') },
-      ];
-      notificationRepository.find.mockResolvedValue(dueNotifications);
-      jest.spyOn(service, 'sendNotification').mockResolvedValue({ success: true } as never);
-
-      await service.processScheduledNotifications();
-
-      expect(notificationRepository.find).toHaveBeenCalledWith(expect.objectContaining({
-        where: expect.objectContaining({
-          status: NotificationStatus.PENDING,
-          scheduledAt: expect.anything(),
-        }),
-      }));
-      expect(service.sendNotification).toHaveBeenCalledTimes(2);
-      expect(service.sendNotification).toHaveBeenCalledWith('1');
-      expect(service.sendNotification).toHaveBeenCalledWith('2');
     });
   });
 
